@@ -42,9 +42,9 @@ class GradoH(Renderer):
 	
 		
 class GradoHP(Renderer):
-	def get(self, nombreGrado):
-		grados = Grado.query(Grado.nombre==nombreGrado).get()
-		self.render("modificarg.html", grados=grados)
+	def get(self):
+		#grados = Grado.query(Grado.nombre==nombreGrado).get()
+		self.render("modificarg.html")
 	def post(self, nombreGrado):
 		name = self.request.get('nombre')
 		grados = Grado.query(Grado.nombre == name).get()
@@ -87,7 +87,7 @@ app = webapp2.WSGIApplication([
 	('/prueba',PruebaHP),
 	('/crearg',GradoH),
 	('/modificarg/asistente', AsistenteH),
-	('/modificarg/(.*)',GradoHP),
+	('/modificarg',GradoHP),
 	('/eliminarg/(.*)',GradoD),
 	('/grado',GradoH)
 ], debug=True)
