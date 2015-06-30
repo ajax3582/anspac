@@ -2,14 +2,14 @@
 <html>
   <head>
     <title>Grado</title>
-    <link href="css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
-    <link href="css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
-    <script src="js/javascript.js"></script>
-    <script src="js/vendor/jquery.js" ></script>
-    <script src="js/foundation.min.js" ></script>
-    <script src="js/foundation/foundation.js"></script>
-    <script src="js/foundation/foundation.magellan.js"></script>
-    <script src="js/foundation/foundation.interchange.js"></script>
+    <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
+    <script src="/js/javascript.js"></script>
+    <script src="/js/vendor/jquery.js" ></script>
+    <script src="/js/foundation.min.js" ></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.magellan.js"></script>
+    <script src="/js/foundation/foundation.interchange.js"></script>
   </head>
   <body>
     <div class="row">
@@ -32,7 +32,7 @@
         <ul>
           {% for grado in grados%}
             <div class="large-2 columns">
-             <a href="modificarg"><il>{{grado.nombre}}</il></a>
+             <a href="modificarg/{{grado.nombre}}"><il>{{grado.nombre}}</il></a>
             </div>
           {% endfor %}
         </ul>

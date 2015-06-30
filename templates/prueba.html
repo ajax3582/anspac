@@ -1,14 +1,12 @@
 <html>
   <head>
     <title>Asistentes</title>
-    <link href="css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
-    <link href="css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
-    <script src="js/javascript.js"></script>
-    <script src="js/vendor/jquery.js" ></script>
-    <script src="js/foundation.min.js" ></script>
-    <script src="js/foundation/foundation.js"></script>
-    <script src="js/foundation/foundation.magellan.js"></script>
-    <script src="js/foundation/foundation.interchange.js"></script>
+    <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
+    <script src="/js/javascript.js"></script>
+    <script src="/js/vendor/jquery.js" ></script>
+    <script src="/js/foundation.min.js" ></script>
+    <script src="/js/foundation/foundation.js"></script>
   </head>
   <body>
   	<div class="row">
@@ -26,13 +24,19 @@
 				      <td><p>Nombre</p></td> 	
 				      <td><input name="nombre"></td>
 					
-					  <td><p>Cumpleaños</p></td> 	
-				      <td><input name="cumple"></td>
+					  <td><p>Apellido P</p></td> 	
+				      <td><input name="app"></td>
 
-				      <td><p>Telefono</p></td> 	
-				      <td><input name="telefono"></td>
+				      <td><p>Apellido M</p></td> 	
+				      <td><input name="apm"></td>
+
+				      <td><p>Cumpleaños</p></td> 	
+				      <td><input name="cumple"></td>
 					</tr> 
-					<tr>
+					<tr></tr><tr>
+					  <td><p>Telefono</p></td> 	
+				      <td><input name="telefono"></td>
+
 					  <td><p>Celular</p></td> 	
 				      <td><input name="celular"></td>
 
@@ -48,19 +52,21 @@
 						</select>
 				      </td>
 					</tr> 
-				    <tr>
-				      <td><a href="asistente"><button>Volver</button></a></td>
+				    <tr></tr><tr>
+				      <td></td>
+				      <td></td>
+				      <td></td>
 				      <td></td>
 				      <td></td>
 				      <td></td>
 				      <td></td>	  
-				      <td><input type="submit"></td>
+				      <td><input id="btnAdd" type="submit"></td>
 				    </tr>
 				  </tbody>
 				</table>
 		  </div>	
 		 </form>
-		 
+		 <a href="/asistente"><button id="btnAdd">Volver</button></a>
 	 </div>
 	 <script>
       $(document).foundation();
