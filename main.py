@@ -8,22 +8,39 @@ class MainHandler(Renderer):
 
 class AsistenteH(Renderer):
     def get(self):
-		self.render("asistente.html")
-
+		asis = Asistente.query().order(Asistente.app)
+		self.render("asistente.html",asis=asis)
+		
+class AsistenteHP(Renderer):
+	def get(self, correo):
+		asis = Asistente.query(Asistente.correo==correo).get()
+		self.render("modificara.html",asis=asis)
+		
 class PruebaHP(Renderer):
 	def get(self):
+		asis = Asistente.query().order(Asistente.nombre)
 		grados = Grado.query().order(Grado.nombre)
-		self.render("prueba.html",grados=grados)
+		self.render("prueba.html",grados=grados,asis=asis)
 	def post(self):
-		a = Asistente()
-		a.nombre = self.request.get('nombre')
-		a.cumple = self.request.get('cumple')
-		a.telefono = self.request.get('telefono')
-		a.celular = self.request.get('celular')
-		a.correo = self.request.get('correo')
-		a.grado = self.request.get('grado')
-		a.put()
-		self.redirect('/asistente')
+		correo = self.request.get('correo')
+		if (correo == ''):
+			self.redirect('/prueba')
+		else:
+			ag = Asistente.query(Asistente.correo == correo ).get()
+			if not ag:
+				a = Asistente()
+				a.nombre = self.request.get('nombre')
+				a.app = self.request.get('app')
+				a.apm = self.request.get('apm')
+				a.cumple = self.request.get('cumple')
+				a.telefono = self.request.get('telefono')
+				a.celular = self.request.get('celular')
+				a.correo = self.request.get('correo')
+				a.grado = self.request.get('grado')
+				a_key = a.put()
+				self.redirect('/asistente')
+			else:
+				self.redirect('/prueba')
 
 class GradoH(Renderer):
 	def get(self):
@@ -35,6 +52,7 @@ class GradoH(Renderer):
 		if not grados: 
 			g = Grado()
 			g.nombre = self.request.get('nombre')
+			g.id = self.request.get('nombre')
 			g.put()
 			self.redirect('/asistente')
 		else:
@@ -44,17 +62,19 @@ class GradoH(Renderer):
 class GradoHP(Renderer):
 	def get(self, nombreGrado):
 		grados = Grado.query(Grado.nombre==nombreGrado).get()
-		self.render("modificarg.html", grados=grados)
+		#grados = Grado()
+		self.render("modificarg.html", grado=grados)
 	def post(self, nombreGrado):
 		name = self.request.get('nombre')
 		grados = Grado.query(Grado.nombre == name).get()
 		if not grados:
 			grado = Grado.query(Grado.nombre == nombreGrado).get()
 			grado.nombre = self.request.get('nombre')
+			grado.id = self.request.get('nombre')
 			grado.put()
-			self.redirect('/grado')
-		else:
 			self.redirect('/asistente')
+		else:
+			self.redirect('/modificarg/',nombreGrado)
 		
 class GradoD(Renderer):
 	def get(self, nombreGrado):
@@ -89,5 +109,6 @@ app = webapp2.WSGIApplication([
 	('/modificarg/asistente', AsistenteH),
 	('/modificarg/(.*)',GradoHP),
 	('/eliminarg/(.*)',GradoD),
-	('/grado',GradoH)
+	('/grado',GradoH),
+	('/modificara/(.*)',AsistenteHP)
 ], debug=True)
