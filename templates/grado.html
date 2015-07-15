@@ -12,6 +12,21 @@
     <script src="/js/foundation/foundation.interchange.js"></script>
   </head>
   <body>
+    <div class="row" id="navbar1">
+      <div> 
+        <div data-magellan-expedition="fixed" class="small-4 large-4 medium-4 columns" id="navbar1">
+          <dl class="sub-nav">
+            <dd data-magellan-arrival="acerca-de-nosotros"><a href="/grupos">Grupo</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/llamadas">Llamadas</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/eventos">Eventos</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/animadora">Animadoras</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/unidad">Unidad</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/curso">Cursos</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/asistente">Asistentes</a></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <h1>Agregar Grado</h1>
       <form accion="/crearg" method="post">
@@ -39,7 +54,7 @@
       </div>
     </div>
     <div class="row">
-     <a class="leftMargin" href="asistente"><button>Volver</button></a>
+     <a id="btnAddt" class="leftMargin button round" href="asistente">Volver</a>
     </div> 
     <script>
       $(document).foundation();

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Anspac</title>
+    <title>Animadoras</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -28,8 +28,45 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <h1>Animadoras</h1>
+      <a href="/crearan"><button class="right" id="btnAdd">Agregar Animadora</button></a>
+      <div class="large-12 medium-12 columns">
+        <table id="mostrarAn">
+          <thead>
+            <tr>
+              <th>Apellido P.</th>
+              <th>Apellido M.</th>
+              <th>Nombre</th>
+              <th>Celular</th>
+              <th>Telefono</th>
+              <th>Cumpleaños</th>
+              <th>Correo</th>
+              <th>Año</th>
+              <th>Desdoblada</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in ani%}
+              <tr>
+                <td class="{{a.coordinadora}}">{{a.app}}</td>
+                <td class="{{a.coordinadora}}">{{a.apm}}</td>
+                <td class="{{a.coordinadora}}">{{a.nombre}}</td>
+                <td class="{{a.coordinadora}}">{{a.celular}}</td>
+                <td class="{{a.coordinadora}}">{{a.telefono}}</td>
+                <td class="{{a.coordinadora}}">{{a.cumple}}</td>
+                <td class="{{a.coordinadora}}">{{a.correo}}</td>
+                <td class="{{a.coordinadora}}">{{a.year}}</td>
+                <td class="{{a.coordinadora}}">{{a.desdoblada}}</td>
+                <td><a href="/modificaran/{{a.llave}}">Modificar</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
     
-     
 
     <!-- FOUNDATION -->
     <script>

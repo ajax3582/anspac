@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Asistentes</title>
+    <title>Unidad</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -25,8 +25,8 @@
       </div>
     </div>
   	<div class="row">
-  		<h1>Agregar Asistente</h1>
-		<form accion="/creara" method="post">
+  		<h1>Agregar Unidad</h1>
+		<form accion="/crearu" method="post">
 		 <div class="large-12 medium-12 columns">
 				<table id="agregarA">
 				  <thead>
@@ -39,49 +39,71 @@
 				      <td><p>Nombre</p></td> 	
 				      <td><input name="nombre"></td>
 					
-					  <td><p>Apellido P</p></td> 	
-				      <td><input name="app"></td>
+					  <td><p>Codigo</p></td> 	
+				      <td><input name="codigo"></td>
 
-				      <td><p>Apellido M</p></td> 	
-				      <td><input name="apm"></td>
+				      <td><p>Direccion</p></td> 	
+				      <td><input name="direccion"></td>
 
-				      <td><p>Cumpleaños</p></td> 	
-				      <td><input name="cumple"></td>
+				      <td><p>Telefono</p></td> 	
+				      <td><input name="telefono"></td>
 					</tr> 
 					<tr></tr><tr>
-					  <td><p>Telefono</p></td> 	
-				      <td><input name="telefono"></td>
+					  <td><p>Dia</p></td> 	
+				      <td><input name="dia"></td>
 
-					  <td><p>Celular</p></td> 	
-				      <td><input name="celular"></td>
-
-				      <td><p>Correo</p></td> 	
-				      <td><input name="correo"></td>
+					  <td><p>Hora</p></td> 	
+				      <td><input name="hora"></td>
 				   
-					  <td><p>Grado</p></td> 		
+					  <td><p>Curso</p></td> 		
 				      <td>
-						<select name="grado">
-							  {% for grado in grados%}
-					             <option value="{{grado.nombre}}">{{grado.nombre}}</option>
+						<select name="curso">
+							  {% for c in curso %}
+					             <option value="{{c.llave}}">{{c.tipo}} {{c.nivel}}</option>
 					          {% endfor %}
 						</select>
 				      </td>
-					</tr> 
-				    <tr></tr><tr>
 				      <td></td>
 				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>	  
-				      <td><input id="btnAdd" type="submit"></td>
-				    </tr>
+					</tr><tr></tr>
+					<tr>
+						  <td><p>Animadora</p></td>
+					      <td>
+					      	<select name="animadora1">
+								  <option value=""></option>
+								  {% for a in ani%}
+						             <option value="{{a.llave}}">{{a.nombre}} {{a.app}} {{a.apm}}</option>
+						          {% endfor %}
+							</select>
+					      </td>
+				          <td><p>Animadora</p></td>
+					      <td>
+					      	<select name="animadora2">
+								  <option value=""></option>
+								  {% for a in ani%}
+						             <option value="{{a.llave}}">{{a.nombre}} {{a.app}} {{a.apm}}</option>
+						          {% endfor %}
+							</select>
+					        </td>
+					        <td><p>Animadora</p></td>
+					        <td>
+					      	<select name="animadora3">
+								  <option value=""></option>
+								  {% for a in ani%}
+						             <option value="{{a.llave}}">{{a.nombre}} {{a.app}} {{a.apm}}</option>
+						          {% endfor %}
+							</select>
+					        </td>
+							<td></td>
+						<td>
+							<input id="btnAdd" type="submit">
+						</td>
+					</tr>
 				  </tbody>
 				</table>
 		  </div>	
 		 </form>
-		 <a id="btnAdd" class="button round"href="/asistente">Volver</a>
+		 <a id="btnAdd" class="button round"href="/unidad">Volver</a>
 	 </div>
 	 <script>
       $(document).foundation();

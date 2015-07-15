@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Anspac</title>
+    <title>Eventos</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -28,8 +28,49 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <h1>Eventos</h1>
+      <a href="/creare"><button class="right" id="btnAdd">Agregar Evento</button></a>
+      <div class="large-12 medium-12 columns">
+        <table id="mostrarAn">
+          <thead>
+            <tr>
+              <th>Unidad</th>
+              <th>Animadora</th>
+              <th>Asistio</th>
+              <th>Observaciones</th>
+              <th>Fecha</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in eventos%}
+              <tr>
+                <td>
+                  {% for u in unidad %}
+                   {% if u.codigo == e.unidad %}
+                    <p> {{u.nombre}} </p>
+                   {% endif %}
+                  {% endfor %}
+                </td>
+                <td>
+                  {% for a in ani %}
+                   {% if a.llave == e.nombre %}
+                    <p>{{a.nombre}} {{a.app}} {{a.apm}} </p>
+                   {% endif %}
+                  {% endfor %}
+                </td>
+                <td>{{e.asistio}}</td>
+                <td>{{e.observaciones}}</td>
+                <td>{{e.fecha}}</td>
+                <td><a href="/modificare/{{e.llave}}">Modificar</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
     
-     
 
     <!-- FOUNDATION -->
     <script>

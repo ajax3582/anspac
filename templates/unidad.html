@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unidad</title>
+    <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
+    <script src="/js/javascript.js"></script>
+    <script src="/js/vendor/jquery.js" ></script>
+    <script src="/js/foundation.min.js" ></script>
+    <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.magellan.js"></script>
+    <script src="/js/foundation/foundation.interchange.js"></script>
+  </head>
+
+  <body>
+    <div class="row" id="navbar1">
+      <div> 
+        <div data-magellan-expedition="fixed" class="small-4 large-4 medium-4 columns" id="navbar1">
+          <dl class="sub-nav">
+            <dd data-magellan-arrival="acerca-de-nosotros"><a href="/grupos">Grupo</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/llamadas">Llamadas</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/eventos">Eventos</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/animadora">Animadoras</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/unidad">Unidad</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/curso">Cursos</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/asistente">Asistentes</a></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <h1>Unidades</h1>
+      <a href="/crearu"><button class="right" id="btnAdd">Agregar Unidad</button></a>
+      <div class="large-12 medium-12 columns">
+        <table id="mostrarAn">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Codigo</th>
+              <th>Direccion</th>
+              <th>Animadoras</th>
+              <th>Telefono</th>
+              <th>Dia</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Nivel</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in unidad %}
+            <tr>
+              <td><a href="/semanas/{{u.codigo}}">{{u.nombre}}</a></td>
+              <td>{{u.codigo}}</td>
+              <td>{{u.direccion}}</td>
+              <td>
+                 {% for a in ani %}
+                  {% if a.llave == u.animadora[0] %}
+                   <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                  {% endif %}
+                  {% if a.llave == u.animadora[1] %}
+                   <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                  {% endif %}
+                  {% if a.llave == u.animadora[2] %}
+                   <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                  {% endif %}
+                  {% if a.llave == u.animadora[3] %}
+                   <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                  {% endif %}
+                  {% if a.llave == u.animadora[4] %}
+                   <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                  {% endif %}
+                 {% endfor %}
+              </td>
+              <td>{{u.telefono}}</td>
+              <td>{{u.dia}}</td>
+              <td>{{u.hora}}</td>
+              {% for c in curso %}
+                {% if c.llave == u.cursos %}
+                 <td>{{c.tipo}}</td>
+                 <td>{{c.nivel}}</td>
+                {% endif %}
+              {% endfor %}
+              <td><a href="/modificaru/{{u.codigo}}">Modificar</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+
+    <!-- FOUNDATION -->
+    <script>
+      $(document).foundation();
+     
+    </script>
+  </body>
+
+</html>

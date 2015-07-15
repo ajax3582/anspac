@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Modificar Grado</title>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <meta charset="UTF-8">
+    <title>Modificar curso</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
+    <script src="/js/javascript.js"></script>
     <script src="/js/vendor/jquery.js" ></script>
     <script src="/js/foundation.min.js" ></script>
     <script src="/js/foundation/foundation.js"></script>
+    <script src="/js/foundation/foundation.magellan.js"></script>
+    <script src="/js/foundation/foundation.interchange.js"></script>
   </head>
+
   <body>
     <div class="row" id="navbar1">
       <div> 
@@ -27,25 +29,40 @@
       </div>
     </div>
     <div class="row">
-      <h1>Modificar Grado</h1>
-      <form accion="/modificarg" method="post">
-          <div class="large-12 medium-12 columns">
-            <div class="large-2 medium-2 columns">
-              <label>Nombre</label>
-            </div>
-            <div class="large-2 medium-2 columns">
-               <input name="nombre" value="{{grado.nombre}}">
-            </div>
-            <div class="large-2 medium-2 columns">
-              <input type="submit">
-            </div>
-          </div>
-      </form>
+        <h1>Cursos</h1>
     </div>
     <div class="row">
-     <a id="btnAddt" class="leftMargin button round" href="/grado">Volver</a>
-     <a id="btnAddt" class="button round right" href="/eliminarg/{{grado.nombre}}">eliminar</a>
-    </div> 
-
+      <div class="large-12 medium-12 columns">
+        <form accion="/modificarc/{{curso.llave}}" method="post">
+            <div class="large-1 medium-1 columns">
+              <label>Tipo</label>
+            </div>
+            <div class="large-2 medium-2 columns">
+              <input name="tipo" value="{{curso.tipo}}">
+            </div>
+            <div class="large-1 medium-1 columns">
+              <label>Nivel</label>
+            </div>
+            <div class="large-2 medium-2 columns">
+              <input name="nivel" value="{{curso.nivel}}">
+            </div>
+            <div class="large-1 medium-1 columns">
+              <input id="btnAdd" type="submit">
+            </div>
+            <div class="large-5 medium-5 columns"></div>
+        </form>
+        <div class="large-2 medium-2 columns">
+              <a href="/curso"><button href="/curso" id="btnAdd">Volver</button></a>
+        </div>
+        <div class="large-2 medium-2 columns">
+             <a href="/cursoD/{{curso.llave}}"><button id="btnAdd">Eliminar</button></a>
+        </div>
+     </div>
+    </div>
+    <!-- FOUNDATION -->
+    <script>
+      $(document).foundation();
+    </script>
   </body>
+
 </html>

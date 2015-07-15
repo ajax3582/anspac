@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Asistentes</title>
+    <title>Animadora</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -25,8 +25,8 @@
       </div>
     </div>
   	<div class="row">
-  		<h1>Agregar Asistente</h1>
-		<form accion="/creara" method="post">
+  		<h1>Agregar Animadora</h1>
+		<form accion="/crearan" method="post">
 		 <div class="large-12 medium-12 columns">
 				<table id="agregarA">
 				  <thead>
@@ -58,30 +58,37 @@
 				      <td><p>Correo</p></td> 	
 				      <td><input name="correo"></td>
 				   
-					  <td><p>Grado</p></td> 		
-				      <td>
-						<select name="grado">
-							  {% for grado in grados%}
-					             <option value="{{grado.nombre}}">{{grado.nombre}}</option>
-					          {% endfor %}
-						</select>
-				      </td>
-					</tr> 
-				    <tr></tr><tr>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>	  
-				      <td><input id="btnAdd" type="submit"></td>
-				    </tr>
+					  <td><p>Año en que ingreso</p></td> 		
+				      <td><input name="year"></td>
+					</tr><tr></tr>
+					<tr>
+						<td><p>Desdoblada</p></td> 	
+				        <td>
+				        	<select name="desdoblada">
+							  <option value="si">Si</option>
+							  <option value="no">No</option>
+							</select>
+					    </td>
+
+				        <td><p>Coordinadora</p></td> 	
+				        <td>
+				        	<select name="coordinadora">
+							  <option value="si">Si</option>
+							  <option value="no">No</option>
+							</select>
+						</td>
+						<td></td> 	
+				        <td></td>
+						<td></td>
+						<td>
+							<input id="btnAdd" type="submit">
+						</td>
+					</tr>
 				  </tbody>
 				</table>
 		  </div>	
 		 </form>
-		 <a id="btnAdd" class="button round"href="/asistente">Volver</a>
+		 <a id="btnAdd" class="button round"href="/animadora">Volver</a>
 	 </div>
 	 <script>
       $(document).foundation();

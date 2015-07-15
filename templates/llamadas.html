@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Anspac</title>
+    <title>Llamadas</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -28,8 +28,49 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <h1>Llamadas</h1>
+      <a href="/crearl"><button class="right" id="btnAdd">Agregar Llamada</button></a>
+      <div class="large-12 medium-12 columns">
+        <table id="mostrarAn">
+          <thead>
+            <tr>
+              <th>Unidad</th>
+              <th>Coordinadora</th>
+              <th>Telefono</th>
+              <th>Celular</th>
+              <th>Observaciones</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for l in llamadas%}
+              <tr>
+                <td>
+                  {% for u in unidad %}
+                   {% if u.codigo == l.unidad %}
+                    <p> {{u.nombre}} </p>
+                   {% endif %}
+                  {% endfor %}
+                </td>
+                <td>
+                  {% for a in ani %}
+                   {% if a.llave == l.coordinadora %}
+                    <p>{{a.nombre}} {{a.app}} {{a.apm}} </p>
+                   {% endif %}
+                  {% endfor %}
+                </td>
+                <td>{{l.telefono}}</td>
+                <td>{{l.celular}}</td>
+                <td>{{l.observaciones}}</td>
+                <td><a href="/modificarl/{{l.llave}}">Modificar</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
     
-     
 
     <!-- FOUNDATION -->
     <script>

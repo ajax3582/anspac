@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Anspac</title>
+    <title>Cursos</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -28,13 +28,53 @@
         </div>
       </div>
     </div>
-    
-     
-
+    <div class="row">
+        <h1>Cursos</h1>
+    </div>
+    <div class="row">
+      <div class="large-12 medium-12 columns">
+       <div class="large-7 medium-7 columns">
+        <table id="mostrarA">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Nivel</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in cursos%}
+              <tr>
+                <td>{{c.tipo}}</td>
+                <td>{{c.nivel}}</td>
+                <td><a href="/modificarc/{{c.llave}}">Modificar</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+     <div class="large-5 medium-5 columns">
+      <h4>Agregar Curso</h4>
+        <form accion="/crearc" method="post">
+          <div class="large-2 medium-2 columns">
+            <p>Tipo
+            <input name="tipo">
+            </p>
+            <br>
+            <p>Nivel
+            <input name="nivel">
+            </p>
+          </div>
+          <div class="large-3 medium-3 columns">
+            <input id="inputCc" type="submit" value="Crear">
+          </div>
+        </form>
+      </div>
+     </div>
+    </div>
     <!-- FOUNDATION -->
     <script>
       $(document).foundation();
-     
     </script>
   </body>
 

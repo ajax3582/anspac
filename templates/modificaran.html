@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Asistentes</title>
+    <title>Animadora</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -25,8 +25,8 @@
       </div>
     </div>
   	<div class="row">
-  		<h1>Agregar Asistente</h1>
-		<form accion="/creara" method="post">
+  		<h1>Modificar Animadora</h1>
+		<form accion="/modificaran" method="post">
 		 <div class="large-12 medium-12 columns">
 				<table id="agregarA">
 				  <thead>
@@ -37,51 +37,60 @@
 				  <tbody>
 				    <tr>
 				      <td><p>Nombre</p></td> 	
-				      <td><input name="nombre"></td>
+				      <td><input name="nombre" value="{{an.nombre}}"></td>
 					
 					  <td><p>Apellido P</p></td> 	
-				      <td><input name="app"></td>
+				      <td><input name="app" value="{{an.app}}"></td>
 
 				      <td><p>Apellido M</p></td> 	
-				      <td><input name="apm"></td>
+				      <td><input name="apm" value="{{an.apm}}"></td>
 
 				      <td><p>Cumpleaños</p></td> 	
-				      <td><input name="cumple"></td>
+				      <td><input name="cumple" value="{{an.cumple}}"></td>
 					</tr> 
 					<tr></tr><tr>
 					  <td><p>Telefono</p></td> 	
-				      <td><input name="telefono"></td>
+				      <td><input name="telefono" value="{{an.telefono}}"></td>
 
 					  <td><p>Celular</p></td> 	
-				      <td><input name="celular"></td>
+				      <td><input name="celular" value="{{an.celular}}"></td>
 
 				      <td><p>Correo</p></td> 	
-				      <td><input name="correo"></td>
+				      <td><input name="correo" value="{{an.correo}}"></td>
 				   
-					  <td><p>Grado</p></td> 		
-				      <td>
-						<select name="grado">
-							  {% for grado in grados%}
-					             <option value="{{grado.nombre}}">{{grado.nombre}}</option>
-					          {% endfor %}
-						</select>
-				      </td>
-					</tr> 
-				    <tr></tr><tr>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>
-				      <td></td>	  
-				      <td><input id="btnAdd" type="submit"></td>
-				    </tr>
+				   	  <td><p>Año en que ingreso</p></td> 	
+				      <td><input name="year" value="{{an.year}}"></td>
+					</tr><tr></tr>
+					<tr>
+						
+
+				        <td><p>Desdoblada</p></td> 	
+				        <td>
+				        	<select name="desdoblada" value="{{an.desdoblada}}">
+							  <option value="si">Si</option>
+							  <option value="no">No</option>
+							</select>
+					    </td>
+
+				        <td><p>Coordinadora</p></td> 	
+				        <td>
+				        	<select name="coordinadora" value="{{an.coordinadora}}">
+							  <option value="si">Si</option>
+							  <option value="no">No</option>
+							</select>
+						</td>
+						<td></td><td></td><td></td>
+						<td>
+							<input id="btnAdd" type="submit">
+						</td>
+					</tr>
 				  </tbody>
 				</table>
 		  </div>	
 		 </form>
-		 <a id="btnAdd" class="button round"href="/asistente">Volver</a>
+
+		 <a id="btnAdd" class="button round"href="/animadora">Volver</a>
+		 <a id="btnAdd" class="button round right"href="/eliminaran/{{an.llave}}">Eliminar</a>
 	 </div>
 	 <script>
       $(document).foundation();

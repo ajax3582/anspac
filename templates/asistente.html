@@ -17,13 +17,13 @@
       <div> 
         <div data-magellan-expedition="fixed" class="small-4 large-4 medium-4 columns" id="navbar1">
           <dl class="sub-nav">
-            <dd data-magellan-arrival="acerca-de-nosotros"><a href="/">Grupo</a></dd>
-            <dd data-magellan-arrival="menu"><a href="#menu">Llamadas</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="#contactanos">Eventos</a></dd>
-            <dd data-magellan-arrival="menu"><a href="#menu">Animadoras</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="#contactanos">Unidad</a></dd>
-            <dd data-magellan-arrival="menu"><a href="#menu">Cursos</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="#">Asistentes</a></dd>
+            <dd data-magellan-arrival="acerca-de-nosotros"><a href="/grupos">Grupo</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/llamadas">Llamadas</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/eventos">Eventos</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/animadora">Animadoras</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/unidad">Unidad</a></dd>
+            <dd data-magellan-arrival="menu"><a href="/curso">Cursos</a></dd>
+            <dd data-magellan-arrival="contactanos"><a href="/asistente">Asistentes</a></dd>
           </dl>
         </div>
       </div>
@@ -61,8 +61,8 @@
                 <td>{{a.telefono}}</td>
                 <td>{{a.cumple}}</td>
                 <td>{{a.correo}}</td>
-                <td>{{a.grado}}</td>
-                <td><a href="/modificara/{{a.correo}}">Modificar</a></td>
+                <td>{{a.grado.nombre}}</td>
+                <td><a href="/modificara/{{a.llave}}">Modificar</a></td>
               </tr>
             {% endfor %}
           </tbody>
