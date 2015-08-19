@@ -41,6 +41,19 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+@media print {
+  .noPrint{ display: none; }
+  .yesPrint{ display: block !important;}
+    .yesPrint th{
+        text-align: left;
+    }
+  td,th{border:solid #000 !important;
+      border-width:0 1px 1px 0 !important;}    
+  table {
+    border:solid #000 !important;
+    border-width:1px 0 0 1px !important;
+    }
+}
 /*------------------------------------------GENERAL---------------------------------------------------*/
 body{
 	color: black;
@@ -71,6 +84,9 @@ h4{
 table{
 	background-color: #F5F1DE;
 }
+hr{
+    border-top: 1px solid #000;
+}
 /*------------------------------------------CLASES---------------------------------------------------*/
 .leftMargin{
 	margin-left: 16px;
@@ -81,6 +97,10 @@ table{
 }
 .no{
 
+}
+.centered{
+    margin-left: auto;
+    margin-right: auto;
 }
 /*------------------------------------------ID'S---------------------------------------------------*/
 #navbar1{
@@ -141,7 +161,7 @@ table{
 	font-size: 18px;
 }
 #mostrarAn td{
-	font-size: 15px;
+	font-size: 16px;
 }
 #si{
 	font-size: 24px;
@@ -156,4 +176,5 @@ table{
 }
 #mart{
 	margin-top: 10px;
+    
 }

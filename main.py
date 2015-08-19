@@ -1,43 +1,147 @@
 from render import Renderer
 import webapp2
 from Models import *
+from google.appengine.api import users
+from google.appengine.ext import blobstore
+from google.appengine.ext.webapp import blobstore_handlers
 
+class Check(Renderer):
+	def asis(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+				else:
+					return
+			else:
+				self.redirect('/login')
+		else:
+			self.redirect('/new2')
+			
+class ControlH2(Renderer):
+	def get(self):
+		user = "None"
+		logout =""
+		greeting = ((users.create_login_url('/login')))
+		self.render("index2.html",greeting = greeting, user=user, logout = logout)
+			
+class ControlH(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+		logout = ('%s' %(users.create_logout_url('/logout')))
+		self.render("nuevos.html", logout=logout, user = user)
+		
 class MainHandler(Renderer):
     def get(self):
-		self.render("index.html")
-
-class AsistenteH(Renderer):
-    def get(self):
-		asis = Asistente.query().order(Asistente.app)
-		self.render("asistente.html",asis=asis)
-		
-class AsistenteHP(Renderer):
-	def get(self, a):
-		a = int(a)
-		asis = Asistente.query(Asistente.llave==a).get()
-		grados = Grado.query().order(Grado.nombre)
-		self.render("modificara.html",asis=asis,grados=grados)
-	def post(self, a):#put
-		a = int(a)
-		asis = Asistente.query(Asistente.llave==a).get()
-		asis.nombre = self.request.get('nombre')
-		asis.app = self.request.get('app')
-		asis.apm = self.request.get('apm')
-		asis.cumple = self.request.get('cumple')
-		asis.telefono = self.request.get('telefono')
-		asis.celular = self.request.get('celular')
-		asis.correo = self.request.get('correo')
-		g = Grado.query(Grado.nombre == self.request.get('grado')).get()
-		asis.grado = g
-		asis.put()
-		self.redirect('/asistente')
-		
-class PruebaHP(Renderer):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					logout = ('%s' %(users.create_logout_url('/logout')))
+					self.render("nuevos.html", logout=logout, user = user)
+				else:
+					greeting = ('Bienvenido, %s! <a href="%s">sign out</a>' %(user.nickname(), users.create_logout_url('/logout')))
+					logout = ('%s' %(users.create_logout_url('/logout')))
+					self.render("index.html",greeting = greeting, user=user, logout = logout)
+		else:
+			user = "None"
+			logout =""
+			greeting = ((users.create_login_url('/login')))
+			self.render("index2.html",greeting = greeting, user=user, logout = logout)
+			
+class Login(Renderer):
 	def get(self):
-		asis = Asistente.query().order(Asistente.nombre)
+		user = users.get_current_user()
+		u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+		if u:
+			if u.grado == 1:
+				logout = ('%s' %(users.create_logout_url('/logout')))
+				self.render("nuevos.html", logout=logout, user = user)
+			else:
+				greeting = ('Bienvenido, %s! (<a href="%s">sign out</a>' %(user.nickname(), users.create_logout_url('/logout')))
+				logout = ('%s' %(users.create_logout_url('/logout')))
+				self.render("index.html", user=user, greeting = greeting, logout = logout )
+		else:
+			u = UsuariosModel()
+			u.usuario = user
+			u.grado = 1
+			u.put()
+			logout = ('%s' %(users.create_logout_url('/logout')))
+			self.render("nuevos.html", logout = logout, user = user)
+			
+class Logout(Renderer):
+	def get(self):
+		user = "None"
+		greeting = ((users.create_login_url('/login')))
+		self.render("index2.html", user=user,greeting=greeting)
+#----------------------------------------Grado----------------------------------------------------#
+class GradoH(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		grado = Grado.query().order(Grado.nombre)
+		self.render("grado.html",grado=grado,user=user)
+	def post(self):
+		g = Grado()
+		g.nombre = self.request.get('nombre')
+		k = g.put()
+		g.llave = k.id()
+		g.put()
+		self.redirect('/grado')
+
+class GradoHP(Renderer):
+	def get(self,nombre):
+		g = Grado.query(Grado.nombre==nombre).get()
+		self.render("/gmodificar.html",g=g)
+	def post(self,nombre):
+		nnombre = self.request.get('nnombre')
+		g = Grado.query(Grado.nombre==nombre).get()
+		g.nombre = nnombre
+		g.put()
+		self.redirect('/grado')
+
+class GradoD(Renderer):
+	def get(self,nombre):
+		g = Grado.query(Grado.nombre==nombre).get()
+		asis = Asistente.query(Asistente.grado==g.llave)
+		for a in asis:
+			a.grado = 0
+			a.put()
+		g.key.delete()
+		self.redirect('/grado')
+#---------------------------------------/Grado----------------------------------------------------#
+#--------------------------------------Asistente--------------------------------------------------#
+class AsistenteH(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
 		grados = Grado.query().order(Grado.nombre)
-		self.render("prueba.html",grados=grados,asis=asis)
-	def post(self):#post
+		asis = Asistente.query().order(-Asistente.date)
+		unidad = Unidad.query().order(Unidad.nombre)
+		self.render("asistente.html",grados=grados,asis=asis,unidad=unidad,user=user)
+
+class AsistenteHPO(Renderer):
+	def get(self):
+		grados = Grado.query().order(Grado.nombre)
+		unidad = Unidad.query().order(Unidad.nombre)
+		self.render("asisagregar.html",grados=grados,unidad=unidad)
+	def post(self):
 		a = Asistente()
 		a.nombre = self.request.get('nombre')
 		a.app = self.request.get('app')
@@ -46,126 +150,454 @@ class PruebaHP(Renderer):
 		a.telefono = self.request.get('telefono')
 		a.celular = self.request.get('celular')
 		a.correo = self.request.get('correo')
-		g = Grado.query(Grado.nombre == self.request.get('grado')).get()
+		g = int(self.request.get('grado'))
 		a.grado = g
-		x = 0
 		a_key = a.put()
 		a.llave = a_key.id()
+		if self.request.get('unidad') != '':
+			unidad = int(self.request.get('unidad'))
+			m = MesesAsis()
+			MesesAsis.asis(m,unidad,a_key.id())
+			u = Unidad.query(Unidad.llave==unidad).get()
+			u.asistente.append(k.id())
 		a.put()
 		self.redirect('/asistente')
-				
-class AsistenteD(Renderer):
-	def get(self, x):
-		x = int(x)
-		unidad = Unidad.query().order(Unidad.codigo)
-		for u in unidad:
-			y = 0
-			while y < len(u.asistente):
-				a = u.asistente[y]
-				if x == a:
-					u.asistente.remove(a)
-					u.put()
-				y = y + 1
-		asis = Asistente.query(Asistente.llave == x).get()
-		asis.key.delete()
-		semanas = Semanas.query(Semanas.asistente == x).get()
-		semanas.key.delete()
-		self.redirect('/asistente')
-		
-class GradoH(Renderer):
-	def get(self):
-		grados = Grado.query().order(Grado.nombre)
-		self.render("grado.html", grados=grados)
-	def post(self):
-		name = self.request.get('nombre')
-		grados = Grado.query(Grado.nombre == name).get()
-		if not grados: 
-			g = Grado()
-			g.nombre = self.request.get('nombre')
-			g.id = self.request.get('nombre')
-			g.put()
-			self.redirect('/asistente')
-		else:
-			self.redirect('/grado')
-	
-		
-class GradoHP(Renderer):
-	def get(self, nombreGrado):
-		grados = Grado.query(Grado.nombre==nombreGrado).get()
-		#grados = Grado()
-		self.render("modificarg.html", grado=grados)
-	def post(self, nombreGrado):#put
-		name = self.request.get('nombre')
-		grados = Grado.query(Grado.nombre == name).get()
-		if not grados:
-			grado = Grado.query(Grado.nombre == nombreGrado).get()
-			grado.nombre = self.request.get('nombre')
-			grado.id = self.request.get('nombre')
-			grado.put()
-			asis = Asistente.query()
-			for a in asis:
-				if(a.grado.nombre == nombreGrado):
-					a.grado.nombre = self.request.get('nombre')
-					a.put()
-			self.redirect('/asistente')
-		else:
-			self.redirect('/modificarg/' + nombreGrado, nombreGrado)
-		
-class GradoD(Renderer):
-	def get(self, nombreGrado):
-		grados = Grado.query(Grado.nombre == nombreGrado).get()
-		grados.key.delete()
-		asis = Asistente.query()
-		for a in asis:
-			if(a.grado.nombre == nombreGrado):
-				a.grado.nombre = "Sin grado"
-				a.put()
-		self.redirect('/asistente')
 
-class CursoH(Renderer):
+class AsistenteHP(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		asis = Asistente.query(Asistente.llave==llave).get()
+		grados = Grado.query().order(Grado.nombre)
+		unidad = Unidad.query().order(Unidad.nombre)
+		self.render("asismodificar.html",asis=asis,grados=grados,unidad=unidad)
+	def post(self,llave):
+		llave = int(llave)
+		a = Asistente.query(Asistente.llave==llave).get()
+		a.nombre = self.request.get('nombre')
+		a.app = self.request.get('app')
+		a.apm = self.request.get('apm')
+		a.cumple = self.request.get('cumple')
+		a.telefono = self.request.get('telefono')
+		a.celular = self.request.get('celular')
+		a.correo = self.request.get('correo')
+		if self.request.get('grado') != '':
+			g = int(self.request.get('grado'))
+			a.grado = g
+		a.put()
+		self.redirect('/asistente')
+		
+class AsistenteD(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		asis = Asistente.query(Asistente.llave==llave).get()
+		meses = Meses.query(Meses.asistente==llave).get()
+		if meses:
+			meses.key.delete()
+		unidad = Unidad.query().order(Unidad.nombre)
+		for uni in unidad:
+			y = 0
+			while y < len(uni.asistente):
+				a = uni.asistente[y]
+				if llave == a:
+					uni.asistente.remove(a)
+					uni.put()
+				y = y + 1
+		asis.key.delete()
+		self.redirect('/asistente')
+#-------------------------------------/Asistente--------------------------------------------------#
+#--------------------------------------Animadora--------------------------------------------------#
+class AnimadoraH(Renderer):
 	def get(self):
-		cursos = Cursos.query().order(Cursos.tipo, Cursos.nivel)
-		self.render("curso.html",cursos=cursos)
-	def post(self):#post
-		curso = Cursos()
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		ani = Animadora.query().order(-Animadora.date)
+		unidad = Unidad.query().order(Unidad.nombre)
+		self.render("animadora.html",ani=ani,unidad=unidad,user=user)
+		
+class AnimadoraHPO(Renderer):
+	def get(self):
+		unidad = Unidad.query().order(Unidad.nombre)
+		self.render("aniagregar.html",unidad=unidad)
+	def post(self):
+		a = Animadora()
+		a.nombre = self.request.get('nombre')
+		a.app = self.request.get('app')
+		a.apm = self.request.get('apm')
+		a.cumple = self.request.get('cumple')
+		a.telefono = self.request.get('telefono')
+		a.celular = self.request.get('celular')
+		a.correo = self.request.get('correo')
+		a.year = self.request.get('year')
+		a.desdoblada = self.request.get('desdoblada')
+		a.coordinadora = self.request.get('coordinadora')
+		k = a.put()
+		if self.request.get('unidad') != '':
+			unidad = int(self.request.get('unidad'))
+			m = MesesAsis()
+			MesesAsis.asis(m,unidad,k.id())
+			u = Unidad.query(Unidad.llave==unidad).get()
+			u.animadora.append(k.id())
+			if a.coordinadora == "si":
+				l = Llamadas()
+				l.unidad = unidad
+				l.coordinadora = k.id()
+				l.telefono = an.telefono
+				l.celular = an.celular
+				l.observaciones = ''
+				l.tipo = u.tipo
+				kk = l.put()
+				l.llave = kk.id()
+				l.put()
+		a.llave = k.id()
+		a.put()
+		self.redirect('/animadora')
+	
+class AnimadoraHP(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		ani = Animadora.query(Animadora.llave==llave).get()
+		self.render("animodificar.html",ani=ani)
+	def post(self,llave):
+		llave = int(llave)
+		a = Animadora.query(Animadora.llave==llave).get()
+		coordinadora = a.coordinadora
+		tel = a.telefono
+		cel = a.celular
+		a.nombre = self.request.get('nombre')
+		a.app = self.request.get('app')
+		a.apm = self.request.get('apm')
+		a.cumple = self.request.get('cumple')
+		a.telefono = self.request.get('telefono')
+		a.celular = self.request.get('celular')
+		a.correo = self.request.get('correo')
+		a.year = self.request.get('year')
+		a.desdoblada = self.request.get('desdoblada')
+		a.coordinadora = self.request.get('coordinadora')
+		k = a.put()
+		if coordinadora == "si" and a.coordinadora == "si":
+			if tel != a.telefono:
+				ll = Llamadas.query(Llamadas.coordinadora==llave)
+				for l in ll:
+					l.telefono = a.telefono
+					l.put()
+			if cel != a.celular:
+				ll = Llamadas.query(Llamadas.coordinadora==llave)
+				for l in ll:
+					l.celular = a.celular
+					l.put()
+		"""if self.request.get('unidad') != '':
+			unidad = int(self.request.get('unidad'))
+			m = MesesAsis()
+			MesesAsis(m,unidad,k.id())
+			u = Unidad.query(Unidad.llave==unidad).get()
+			u.animadora.append(k.id())"""
+		if coordinadora == "si" and a.coordinadora == "no":
+			ll = Llamadas.query(Llamadas.coordinadora==llave)
+			for l in ll:
+				l.key.delete()
+		self.redirect('/animadora')
+
+class AnimadoraD(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		ani = Animadora.query(Animadora.llave==llave).get()
+		meses = Meses.query(Meses.asistente==llave).get()
+		if meses:
+			meses.key.delete()
+		llamada = Llamadas.query(Llamadas.coordinadora==llave)
+		if llamada:
+			for l in llamada:
+				l.key.delete()
+		unidad = Unidad.query().order(Unidad.nombre)
+		for uni in unidad:
+			y = 0
+			while y < len(uni.animadora):
+				a = uni.animadora[y]
+				if llave == a:
+					uni.animadora.remove(a)
+					uni.put()
+				y = y + 1
+		ani.key.delete()
+		self.redirect('/animadora')		
+#-------------------------------------/Animadora--------------------------------------------------#
+#---------------------------------------Cursos----------------------------------------------------#
+class CursosH(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
 		cursos = Cursos.query().order(Cursos.tipo)
+		self.render("curso.html",cursos=cursos,user=user)
+	def post(self):
+		curso = Cursos()
 		curso.tipo = self.request.get('tipo')
 		curso.nivel = self.request.get('nivel')
 		var1 = curso.put()
 		curso.llave = var1.id()
 		curso.put()
 		self.redirect('/curso')
-
-class CursoHP(Renderer):
+		
+class CursosHP(Renderer):
 	def get(self,cursoK):
 		cursoK = int(cursoK)
 		curso = Cursos.query(Cursos.llave==cursoK).get()
-		self.render("modificarc.html",curso=curso)
-	def post(self,cursoK):#put
+		self.render("cmodificar.html",curso=curso)
+	def post(self,cursoK):
 		cursoK = int(cursoK)
 		curso = Cursos.query(Cursos.llave==cursoK).get()
 		curso.tipo = self.request.get('tipo')
 		curso.nivel = self.request.get('nivel')
 		curso.put()
 		self.redirect('/curso')
-
-class CursoHD(Renderer):
-	def get(self,k):
-		k = int(k)
-		curso = Cursos.query(Cursos.llave==k).get()
+		
+class CursoD(Renderer):
+	def get(self,cursok):
+		#cursoK = int(cursoK)
+		curso = Cursos.query(Cursos.llave==int(cursok)).get()
 		curso.key.delete()
 		self.redirect('/curso')
-
-class AnimadoraH(Renderer):
+#--------------------------------------/Cursos----------------------------------------------------#
+#---------------------------------------Unidad----------------------------------------------------#
+class UnidadH(Renderer):
 	def get(self):
-		ani = Animadora.query().order(Animadora.app)
-		self.render("animadora.html",ani=ani)
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		unidad = Unidad.query().order(Unidad.tipo)
+		ani = Animadora.query().order(-Animadora.coordinadora)
+		curso = Cursos.query()
+		tipos = UnidadTipo.query().order(UnidadTipo.tipo)
+		x1 = "Unidades"
+		self.render('unidad.html',unidad=unidad,ani=ani,curso=curso,tipos=tipos,x=x1,user=user)
 
-class AnimadoraHP(Renderer):
+class UnidadDir(Renderer):
 	def get(self):
-		unidad = Unidad.query().order(Unidad.nombre)
-		self.render("crearan.html",unidad=unidad)
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		unidad = Unidad.query().order(Unidad.tipo)
+		ani = Animadora.query(Animadora.coordinadora=="si")
+		curso = Cursos.query()
+		x1 = "Directorio"
+		self.render('unidadir.html',unidad=unidad,ani=ani,curso=curso,x=x1,user=user)
+
+class UnidadHT(Renderer):
+	def get(self, tipo):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		unidad = Unidad.query(Unidad.tipo==tipo).order(Unidad.nombre)
+		ani = Animadora.query().order(-Animadora.coordinadora)
+		curso = Cursos.query()
+		tipos = UnidadTipo.query().order(UnidadTipo.tipo)
+		x1 = tipo
+		self.render('unidad.html',unidad=unidad,ani=ani,curso=curso,tipos=tipos,x=x1,user=user)
+		
+class UnidadHPO(Renderer):
+	def get(self):
+		curso = Cursos.query().order(Cursos.tipo)
+		tipo = UnidadTipo.query().order(UnidadTipo.tipo)
+		ani = Animadora.query(Animadora.coordinadora=="si").order(Animadora.app)
+		self.render('ucrear.html',curso=curso,tipo=tipo,ani=ani)
 	def post(self):#post
+		u = Unidad()
+		u.nombre = self.request.get('nombre')
+		u.codigo = self.request.get('codigo')
+		u.direccion = self.request.get('direccion')
+		u.telefono = self.request.get('telefono')
+		u.dia = self.request.get('dia')
+		u.hora = self.request.get('hora')
+		curso = self.request.get('curso')
+		curso = int(curso)
+		t = self.request.get('tipo')
+		if t == '':
+			t = self.request.get('tipo2')
+			if t != '':
+				ut = UnidadTipo()
+				ut.tipo = t
+				ut.put()
+		u.tipo = t
+		u.cursos = curso
+		u.ciudad = self.request.get('ciudad')
+		virgen = self.request.get('virgen')
+		u.virgen = virgen
+		parroco = self.request.get('parroco')
+		if u.tipo != "Parroquia":
+			parroco = "NA"
+		u.parroco = parroco
+		animadora = self.request.get('animadora1')#esta seria la coordinadora
+		x = u.put()
+		u.llave = x.id()
+		if animadora != '':
+			a = int(self.request.get('animadora1'))
+			u.animadora.append(a)
+			m = MesesAsis()
+			MesesAsis.asis(m,u.llave,a)
+			an = Animadora.query(Animadora.llave==a).get()
+			l = Llamadas()
+			l.unidad = u.llave
+			l.coordinadora = a
+			l.telefono = an.telefono
+			l.celular = an.celular
+			l.observaciones = ''
+			l.tipo = u.tipo
+			kk = l.put()
+			l.llave = kk.id()
+			l.put()
+			an.tipo = u.tipo
+			an.put()
+		u.total = [0,0,0,0,0,0,0,0,0,0]
+		u.put()
+		self.redirect('/unidad')
+
+class UnidadHP(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		unidad = Unidad.query(Unidad.llave==llave).get()
+		asis = Asistente.query().order(Asistente.app)
+		ani = Animadora.query().order(Animadora.app)
+		curso = Cursos.query().order(Cursos.tipo)
+		tipo = UnidadTipo.query()
+		self.render("umodificar.html",unidad=unidad,ani=ani,asis=asis,curso=curso,tipo=tipo)
+	def post(self,llave):
+		llave = int(llave)
+		u = Unidad.query(Unidad.llave==llave).get()
+		u.nombre = self.request.get('nombre')
+		u.codigo = self.request.get('codigo')
+		u.direccion = self.request.get('direccion')
+		u.telefono = self.request.get('telefono')
+		u.dia = self.request.get('dia')
+		u.hora = self.request.get('hora')
+		u.ciudad = self.request.get('ciudad')
+		if u.tipo == "Parroquia":
+			u.parroco = self.request.get('parroco')
+			if self.request.get('virgen') != '':
+				u.virgen = self.request.get('virgen')
+		curso = self.request.get('curso')
+		if curso != '':
+			curso = int(curso)
+			u.cursos = curso
+		t = self.request.get('tipo')
+		if t != '':
+			u.tipo = t
+		u.ciudad = self.request.get('ciudad')
+		u.put()
+		self.redirect('/unidad')
+class UnidadD(Renderer):
+	def get(self,llave):
+		llave = int(llave)
+		m = Meses.query(Meses.unidad==llave)
+		if m:
+			for me in m:
+				me.key.delete()
+		l = Llamadas.query(Llamadas.unidad==llave)
+		if l:
+			for ll in l:
+				ll.key.delete()
+		u = Unidad.query(Unidad.llave==llave).get()
+		for x in u.asistente:
+			a = Asistente.query(Asistente.llave==x).get()
+			a.tipo = "NA"
+			a.put()
+		for x in u.animadora:
+			a = Animadora.query(Animadora.llave==x).get()
+			a.tipo = "NA"
+			a.put()
+		u.key.delete()
+		self.redirect('/unidad')
+		
+class UnidadAasis(Renderer):
+	def get(self,llave):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		llave = int(llave)
+		u = Unidad.query(Unidad.llave==llave).get()
+		grados = Grado.query().order(Grado.nombre)
+		self.render("asisagregar.html",u=u,grados=grados,user=user)
+	def post(self,llave):
+		llave = int(llave)
+		a = Asistente()
+		a.nombre = self.request.get('nombre')
+		a.app = self.request.get('app')
+		a.apm = self.request.get('apm')
+		a.cumple = self.request.get('cumple')
+		a.telefono = self.request.get('telefono')
+		a.celular = self.request.get('celular')
+		a.correo = self.request.get('correo')
+		g = int(self.request.get('grado'))
+		a.grado = g
+		k = a.put()
+		a.llave = k.id()
+		m = MesesAsis()
+		MesesAsis.asis(m,llave,a.llave)
+		u = Unidad.query(Unidad.llave==llave).get()
+		u.asistente.append(a.llave)
+		u.put()
+		a.tipo = u.tipo
+		a.put()
+		self.redirect('/uagregarasis/' + str(llave) )
+
+class UnidadAasisD(Renderer):	
+	def get(self,llave,asis):
+		llave = int(llave)
+		asis = int(asis)
+		u = Unidad.query(Unidad.llave==llave).get()
+		u.asistente.remove(asis)
+		u.put()
+		a = Asistente.query(Asistente.llave==asis).get()
+		a.tipo = "NA"
+		a.put()
+		m = Meses.query(Meses.unidad==llave,Meses.asistente==asis).get()
+		m.key.delete()
+		self.redirect('/umodificar/' + str(llave))
+		
+class UnidadAani(Renderer):
+	def get(self,llave):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		llave = int(llave)
+		u = Unidad.query(Unidad.llave==llave).get()
+		self.render("aniagregar.html",u=u,user=user)
+	def post(self,llave):
+		llave = int(llave)
 		a = Animadora()
 		a.nombre = self.request.get('nombre')
 		a.app = self.request.get('app')
@@ -179,408 +611,283 @@ class AnimadoraHP(Renderer):
 		a.coordinadora = self.request.get('coordinadora')
 		k = a.put()
 		a.llave = k.id()
+		m = MesesAsis()
+		MesesAsis.asis(m,llave,a.llave)
+		u = Unidad.query(Unidad.llave==llave).get()
+		u.animadora.append(a.llave)
+		u.put()
+		if a.coordinadora == "si":
+			l = Llamadas()
+			l.unidad = llave
+			l.coordinadora = k.id()
+			l.telefono = a.telefono
+			l.celular = a.celular
+			l.observaciones = ''
+			l.tipo = u.tipo
+			kk = l.put()
+			l.llave = kk.id()
+			l.put()
+		a.tipo = u.tipo
 		a.put()
-		self.redirect('/animadora')
+		self.redirect('/uagregarani/' + str(llave) )
 
-class AnimadoraHpu(Renderer):
-	def get(self,k):
-		k = int(k)
-		an = Animadora.query(Animadora.llave==k).get()
-		unidad = Unidad.query().order(Unidad.nombre)
-		self.render("modificaran.html",an=an,unidad=unidad)
-	def post(self,k):#put
-		k = int(k)
-		a = Animadora.query(Animadora.llave==k).get()
-		a.nombre = self.request.get('nombre')
-		a.app = self.request.get('app')
-		a.apm = self.request.get('apm')
-		a.cumple = self.request.get('cumple')
-		a.telefono = self.request.get('telefono')
-		a.celular = self.request.get('celular')
-		a.correo = self.request.get('correo')
-		uni = self.request.get('unidad')
-		if uni != '':
-			uni = int(uni)
-			a.unidad = uni
-		a.year = self.request.get('year')
-		a.desdoblada = self.request.get('desdoblada')
-		a.coordinadora = self.request.get('coordinadora')
+class UnidadAaniD(Renderer):	
+	def get(self,llave,asis):
+		llave = int(llave)
+		asis = int(asis)
+		u = Unidad.query(Unidad.llave==llave).get()
+		u.animadora.remove(asis)
+		u.put()
+		a = Animadora.query(Animadora.llave==asis).get()
+		a.tipo = "NA"
 		a.put()
-		self.redirect('/animadora')
-		
-class AnimadoraD(Renderer):
-	def get(self,k):
-		k = int(k)
-		a = Animadora.query(Animadora.llave==k).get()
-		a.key.delete()
-		unidad = Unidad.query().order(Unidad.codigo)
-		for u in unidad:
-			y = 0
-			while y < len(u.asistente):
-				a = u.asistente[y]
-				if k == a:
-					u.asistente.remove(a)
-					u.put()
-				y = y + 1
-		semanas = Semanas.query(Semanas.asistente == k).get()
-		semanas.key.delete()
-		self.redirect('/animadora')
-		
-class UnidadH(Renderer):
-	def get(self):
-		unidad = Unidad.query().order(Unidad.nombre)
-		ani = Animadora.query().order(-Animadora.coordinadora)
-		curso = Cursos.query().order(Cursos.llave)
-		self.render("unidad.html",unidad=unidad,curso=curso,ani=ani)
-
-class UnidadHP(Renderer):
-	def get(self):
-		curso = Cursos.query().order(Cursos.nivel, Cursos.tipo)
-		ani = Animadora.query().order(Animadora.app)
-		self.render("crearu.html",curso=curso,ani=ani)
-	def post(self):#post
-		u = Unidad()
-		codigo = int(self.request.get('codigo'))
-		u.nombre = self.request.get('nombre')
-		u.codigo = codigo
-		u.direccion = self.request.get('direccion')
-		u.telefono = self.request.get('telefono')
-		u.dia = self.request.get('dia')
-		u.hora = self.request.get('hora')
-		curso = self.request.get('curso')
-		curso = int(curso)
-		u.cursos = curso
-		animadora = self.request.get('animadora1')
-		if animadora != '':
-			a = int(self.request.get('animadora1'))
-			u.animadora.append(a)
-			UnidadHP.altaSemana(self,codigo,a)
-		animadora = self.request.get('animadora2')
-		if animadora != '':
-			a = int(self.request.get('animadora2'))
-			u.animadora.append(a)
-			UnidadHP.altaSemana(self,codigo,a)
-		animadora = self.request.get('animadora3')
-		if animadora != '':
-			a = int(self.request.get('animadora3'))
-			u.animadora.append(a)
-			UnidadHP.altaSemana(self,codigo,a)
-		u.put()
-		self.redirect('/unidad')
-	def altaSemana(self,codigo,asis):
-		s = Semanas()
-		s.asistente = asis
-		s.unidad = codigo
-		s.s1 = "0"
-		s.s2 = "0"
-		s.s3 = "0"
-		s.s4 = "0"
-		s.ss = "0"
-		k = s.put()
-		s.llave = k.id()
-		s.put()
-		return
-
-class UnidadHpu(Renderer):
-	def get(self,codigo):
-		codigo = int(codigo)
-		unidad = Unidad.query(Unidad.codigo==codigo).get()
-		curso = Cursos.query().order(Cursos.nivel, Cursos.tipo)
-		ani = Animadora.query().order(Animadora.app)
-		asistente = Asistente.query().order(Asistente.app)
-		self.render("modificaru.html",unidad=unidad,curso=curso,ani=ani,asistente=asistente)
-	def post(self,codigo):#put
-		codigo = int(codigo)
-		u = Unidad.query(Unidad.codigo==codigo).get()
-		codigo = self.request.get('codigo')
-		u.nombre = self.request.get('nombre')
-		if codigo != '':
-			codigo = int(codigo)
-			u.codigo = codigo
-		u.direccion = self.request.get('direccion')
-		u.telefono = self.request.get('telefono')
-		u.dia = self.request.get('dia')
-		u.hora = self.request.get('hora')
-		curso = self.request.get('curso')
-		if curso != '':
-			curso = int(curso)
-			u.cursos = curso
-		x = len(u.animadora)
-		if x < 5:
-			animadora = self.request.get('animadora1')
-			if animadora != '':
-				a = int(self.request.get('animadora1'))
-				u.animadora.append(a)
-				UnidadHpu.altaSemana(self,codigo,a)
-				x = x+1
-			animadora = self.request.get('animadora2')
-			if (animadora != '') and (x < 5):
-				a = int(self.request.get('animadora2'))
-				u.animadora.append(a)
-				UnidadHpu.altaSemana(self,codigo,a)
-				x = x+1
-			animadora = self.request.get('animadora3')
-			if (animadora != '') and (x < 5):
-				a = int(self.request.get('animadora3'))
-				u.animadora.append(a)
-				UnidadHpu.altaSemana(self,codigo,a)
-				x = x+1
-		all = self.request.get_all('a')
-		x = len(u.asistente)
-		for a in all:
-			if x < 20:
-				a = int(a)
-				u.asistente.append(a)
-				UnidadHpu.altaSemana(self,codigo,a)
-				x = x+1
-		u.put()
-		self.redirect('/unidad')	
-	def altaSemana(self,codigo,asis):
-		s = Semanas()
-		s.asistente = asis
-		s.unidad = codigo
-		s.s1 = "0"
-		s.s2 = "0"
-		s.s3 = "0"
-		s.s4 = "0"
-		s.ss = "0"
-		k = s.put()
-		s.llave = k.id()
-		s.put()
-		return
-		
-class UnidadHe(Renderer):
-	def get(self,codigo,num):
-		codigo = int(codigo)
-		num = int(num)
-		unidad = Unidad.query(Unidad.codigo==codigo).get()
-		x = unidad.animadora[num]
-		unidad.animadora.remove(x)
-		unidad.put()
-		s = Semanas.query(Semanas.unidad==codigo,Semanas.asistente==x).get()
-		s.key.delete()
-		self.redirect('/unidad')
-	
-class UnidadD(Renderer):
-	def get(self,codigo):
-		codigo = int(codigo)
-		u = Unidad.query(Unidad.codigo==codigo).get()
-		u.key.delete()
-		self.redirect('/unidad')
-
-class UnidadAsis(Renderer):
-	def get(self,codigo,num):
-		codigo = int(codigo)
-		num = int(num)
-		u = Unidad.query(Unidad.codigo==codigo).get()
-		x = u.asistente[num]
-		u.asistente.remove(x)
-		u.put()
-		s = Semanas.query(Semanas.unidad==codigo,Semanas.asistente==x).get()
-		s.key.delete()
-		self.redirect('/unidad')
-		
-		
+		if a.coordinadora=="si":
+			l = Llamadas.query(Llamadas.unidad==llave,Llamadas.coordinadora==asis).get()
+			l.key.delete()
+		m = Meses.query(Meses.unidad==llave,Meses.asistente==asis).get()
+		m.key.delete()
+		self.redirect('/umodificar/' + str(llave))
+#--------------------------------------/Unidad----------------------------------------------------#
+#--------------------------------------Llamadas---------------------------------------------------#
 class LlamadasH(Renderer):
 	def get(self):
-		llamadas = Llamadas.query()
-		unidad = Unidad.query().order(Unidad.nombre)
-		ani = Animadora.query()
-		self.render("llamadas.html",llamadas=llamadas,unidad=unidad,ani=ani)
-
-class LlamadasHP(Renderer):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		llamadas = Llamadas.query(Llamadas.tipo=="Parroquia")
+		unidad = Unidad.query(Unidad.tipo=="Parroquia").order(Unidad.nombre)
+		ani = Animadora.query().order(Animadora.app)
+		tipos = UnidadTipo.query().order(Unidad.tipo)
+		x = "Parroquia"
+		self.render("llamadas.html",ani=ani,llamadas=llamadas,unidad=unidad,tipos=tipos,x=x,user=user)
+		
+class LlamadasHT(Renderer):
+	def get(self,tipo):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		llamadas = Llamadas.query(Llamadas.tipo==tipo)
+		unidad = Unidad.query(Unidad.tipo==tipo).order(Unidad.nombre)
+		ani = Animadora.query().order(Animadora.app)
+		tipos = UnidadTipo.query().order(Unidad.tipo)
+		x = tipo
+		self.render("llamadas.html",ani=ani,llamadas=llamadas,unidad=unidad,tipos=tipos,x=x)
+#-------------------------------------/Llamadas---------------------------------------------------#
+#---------------------------------------Eventos---------------------------------------------------#
+class EventosH(Renderer):
 	def get(self):
-		unidad = Unidad.query()
-		ani = Animadora.query()
-		self.render("crearl.html",unidad=unidad,ani=ani)
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		eventos = Evento.query().order(Evento.nombre)
+		self.render("eventos.html",eventos=eventos,user=user)
+	
+class EventosAsis(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		unidad = Unidad.query().order(Unidad.tipo)
+		ani = Animadora.query().order(Animadora.coordinadora,Animadora.app)
+		self.render("easis.html",unidad=unidad,ani=ani)
+		
+class EventosHPO(Renderer):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		unidad = Unidad.query().order(Unidad.tipo)
+		ani = Animadora.query().order(Animadora.coordinadora,Animadora.app)
+		self.render("ecrear.html",unidad=unidad,ani=ani)
 	def post(self):
-		l = Llamadas()
-		x = int(self.request.get('nombre'))
-		l.unidad = x
-		x = int(self.request.get('coordinadora'))
-		l.coordinadora = x
-		l.telefono = self.request.get('telefono')
-		l.celular = self.request.get('celular')
-		l.observaciones = self.request.get('observaciones')
-		x = l.put()
-		l.llave = x.id()
-		l.put()
-		self.redirect('/llamadas')
-
-class LlamadasHpu(Renderer):
-	def get(self,k):
-		k = int(k)
-		l = Llamadas.query(Llamadas.llave==k).get()
-		unidad = Unidad.query()
+		eve = Evento()
+		eve.nombre = self.request.get('nombre')
+		eve.fecha = self.request.get('fecha')
+		k = eve.put()
+		eve.llave = k.id()
+		eve.put()
+		all = self.request.get_all('a')
 		ani = Animadora.query()
-		self.render("modificarl.html",unidad=unidad,l=l,ani=ani)
-	def post(self,k):
-		k = int(k)
-		l = Llamadas.query(Llamadas.llave==k).get()
-		u = self.request.get('unidad')
-		if u != '':
-			u = int(u)
-			l.unidad = u
-		u = self.request.get('coordinadora')
-		if u != '':
-			u = int(u)
-			l.coordinadora = u
-		l.telefono = self.request.get('telefono')
-		l.celular = self.request.get('celular')
-		l.observaciones = self.request.get('observaciones')
-		l.put()
-		self.redirect('/llamadas')
-		
-class LlamadasD(Renderer):
-	def get(self,k):
-		k = int(k)
-		l = Llamadas.query(Llamadas.llave==k).get()
-		l.key.delete()
-		self.redirect('/llamadas')
-
-class EventoH(Renderer):
-	def get(self):
-		unidad = Unidad.query().order(Unidad.nombre)
-		eventos = Evento.query().order(Evento.fecha)
-		ani = Animadora.query()
-		self.render("eventos.html",eventos=eventos,ani=ani,unidad=unidad)
-		
-class EventoHP(Renderer):
-	def get(self):
-		unidad = Unidad.query().order(Unidad.nombre)
-		ani = Animadora.query()
-		self.render("creare.html",ani=ani,unidad=unidad)
-	def post(self):
-		e = Evento()
-		x = int(self.request.get('unidad'))
-		e.unidad = x
-		x = int(self.request.get('nombre'))
-		e.nombre = x
-		e.asistio = self.request.get('asistio')
-		e.observaciones = self.request.get('observaciones')
-		e.fecha = self.request.get('fecha')
-		x = e.put()
-		e.llave = x.id()
-		e.put()
+		for a in ani:
+			e = EAni()
+			e.evento = k.id()
+			e.ani = a.llave
+			if a.llave in all:
+				e.asistio = 'si'
+			else:
+				e.asistio = 'no'
+			e.observaciones = self.request.get(str(a.llave))
+			e.put()
 		self.redirect('/eventos')
-		
-class EventoHpu(Renderer):
-	def get(self,k):
-		k = int(k)
-		e = Evento.query(Evento.llave == k).get() 
-		unidad = Unidad.query().order(Unidad.nombre)
-		ani = Animadora.query()
-		self.render("modificare.html",e=e,ani=ani,unidad=unidad)
-	def post(self,k):
-		k = int(k)
-		e = Evento.query(Evento.llave == k).get()
-		x = self.request.get('unidad')
-		if x != '':
-			x = int(x)
-			e.unidad = x
-		x = self.request.get('nombre')
-		if x != '':
-			x = int(x)
-			e.nombre = x
-		x = self.request.get('asistio')
-		if x != '':
-			e.asistio = x
-		e.observaciones = self.request.get('observaciones')
-		e.fecha = self.request.get('fecha')
-		e.put()
-		self.redirect('/eventos')
-
+#--------------------------------------/Eventos---------------------------------------------------#
+#----------------------------------------Meses----------------------------------------------------#
+class MesesAsis(Renderer):
+	def asis(self,unidad,a):
+		meses = Meses()
+		meses.unidad = unidad
+		meses.asistente = a
+		meses.semanas = [Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0'),
+						 Semanas(s1='0',s2='0',s3='0',s4='0',ss='0')]
+		meses.put()
+		return
+#---------------------------------------/Meses----------------------------------------------------#
+#---------------------------------------Semanas---------------------------------------------------#
 class SemanasH(Renderer):
-	def get(self,codigo):
-		codigo = int(codigo)
-		u = Unidad.query(Unidad.codigo == codigo).get()
-		se = Semanas.query(Semanas.unidad == codigo)
+	def get(self,llave):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		llave = int(llave)
+		x = 0
+		mes = "Enero"
+		meses = Meses.query(Meses.unidad==llave)
+		unidad = Unidad.query(Unidad.llave==llave).get()
 		asis = Asistente.query().order(Asistente.app)
-		ani = Animadora.query().order(-Animadora.coordinadora)
-		self.render("semanas.html",u=u,se=se,asis=asis,ani=ani)
-	def post(self,codigo):
-		codigo = int(codigo)
+		ani = Animadora.query().order(Animadora.app)
+		self.render("semanas.html",meses=meses,u=unidad,asis=asis,ani=ani,xx=x,mes=mes,user=user)
+
+class SemanasHM(Renderer):
+	def get(self,llave,xx):
+		user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')
+		seleccion = {0:"Enero", 1:"Febrero", 2:"Marzo", 3:"Abril", 4:"Mayo", 5:"Junio", 6:"Septiembre", 7:"Octubre", 8:"Noviembre", 9:"Diciembre"}
+		llave = int(llave)
+		xx = int(xx)
+		mes = seleccion[xx]
+		meses = Meses.query(Meses.unidad==llave)
+		unidad = Unidad.query(Unidad.llave==llave).get()
+		asis = Asistente.query().order(Asistente.app)
+		ani = Animadora.query().order(Animadora.app)
+		self.render("semanas.html",meses=meses,u=unidad,asis=asis,ani=ani,xx=xx,mes=mes,user=user)
+	def post(self,llave,xx):
+		llave = int(llave)
+		xx = int(xx)
 		all = self.request.get_all('a')
 		s1 = self.request.get('s1')
 		s2 = self.request.get('s2')
 		s3 = self.request.get('s3')
 		s4 = self.request.get('s4')
 		ss = self.request.get('ss')
+		total = self.request.get('totales')
 		for a in all:
 			a = int(a)
-			se = Semanas.query(Semanas.unidad == codigo, Semanas.asistente == a).get()
+			se = Meses.query(Meses.unidad == llave, Meses.asistente == a).get()
 			if se:
 				if s1 != '':
-					se.s1 = s1
+					se.semanas[xx].s1 = s1
 				if s2 != '':
-					se.s2 = s2
+					se.semanas[xx].s2 = s2
 				if s3 != '':
-					se.s3 = s3
+					se.semanas[xx].s3 = s3
 				if s4 != '':
-					se.s4 = s4
+					se.semanas[xx].s4 = s4
 				if ss != '':
-					se.ss = ss
+					se.semanas[xx].ss = ss
 				se.put()
-		self.redirect('/semanas/' + str(codigo))
+		if total != '':
+			u = Unidad.query(Unidad.llave==llave).get()
+			u.total[xx] = int(total)
+			u.put()
+		self.redirect('/semanass/' + str(llave) + '/' + str(xx))
 		
-class EventoD(Renderer):
-	def get(self,k):
-		k = int(k)
-		e = Evento.query(Evento.llave == k).get() 
-		e.key.delete()
-		self.redirect('/eventos')
-		
-class CrearCafe(Renderer):
+#--------------------------------------/Semanas---------------------------------------------------#	
+#---------------------------------------Reporte---------------------------------------------------#		
+class ReporteH(Renderer):
 	def get(self):
-		self.render("prueba.html")
-	def post(self):
-		nuevoCafe = Cafe()
-		nuevoCafe.nombre = self.request.get('nombre')
-		nuevoCafe.descripcion = self.request.get('descripcion')
-#		nuevoCafe.precio = self.request.get('precio')
-		nuevoCafe.tipoDeCafe = self.request.get('tipoDeCafe')
-		nuevoCafe.put()
-		self.redirect('/nuevoCafe')
-
-class CafeController(Renderer):
-	def get(self, nombreCafe):
-		cafes = Cafe.query(nombre=nombreCafe).get()
-		self.render("cafe.html", cafes=cafes)
-
+		"""user = users.get_current_user()
+		if user:
+			u = UsuariosModel.query(UsuariosModel.usuario==user).get()
+			if u:
+				if u.grado == 1:
+					self.redirect('/new')
+		else:
+			self.redirect('/new2')"""
+		u = Unidad.query(Unidad.tipo == 'Gobierno')
+		r = ReporteMensual()
+		r.reporte.uBasicoGobierno = len(u)
+		r.put()
+#--------------------------------------/Reporte---------------------------------------------------#	
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/asistente', AsistenteH),
-	('/creara',PruebaHP),
-	('/prueba',PruebaHP),
-	('/crearg',GradoH),
-	('/modificarg/asistente', AsistenteH),
-	('/modificarg/(.*)',GradoHP),
-	('/eliminarg/(.*)',GradoD),
-	('/grado',GradoH),
-	('/modificara/(.*)',AsistenteHP),
-	('/eliminara/(.*)',AsistenteD),
-	('/curso', CursoH),
-	('/crearc', CursoH),
-	('/modificarc/(.*)',CursoHP),
-	('/cursoD/(.*)',CursoHD),
-	('/animadora',AnimadoraH),
-	('/crearan',AnimadoraHP),
-	('/modificaran/(.*)',AnimadoraHpu),
-	('/eliminaran/(.*)',AnimadoraD),
-	('/unidad',UnidadH),
-	('/crearu',UnidadHP),
-	('/modificaru/(.*)',UnidadHpu),
-	('/eliminarani/(.*)/(.*)',UnidadHe),
-	('/eliminaru/(.*)',UnidadD),
-	('/asisq/(.*)/(.*)',UnidadAsis),
-	('/semanas/(.*)',SemanasH),
-	('/modificars/(.*)',SemanasH),
+	('/grado',GradoH),#get,post
+	('/grado/(.*)',GradoHP),#put
+	('/geliminar/(.*)',GradoD),#delete
+	('/asistente',AsistenteH),#get
+	('/asisagregar',AsistenteHPO),#post
+	('/asismodificar/(.*)',AsistenteHP),#put
+	('/asiseliminar/(.*)',AsistenteD),#delete
+	('/animadora',AnimadoraH),#get
+	('/aniagregar',AnimadoraHPO),#post
+	('/animodificar/(.*)',AnimadoraHP),#put
+	('/anieliminar/(.*)',AnimadoraD),#delete
+	('/curso',CursosH),#get
+	('/cagregar',CursosH),#post
+	('/cmodificar/(.*)',CursosHP),#put
+	('/celiminar/(.*)',CursoD),#delete
+	('/unidad',UnidadH),#get
+	('/unidad/(.*)',UnidadHT),
+	('/unidaddirectorio',UnidadDir),
+	('/uagregar',UnidadHPO),#post
+	('/umodificar/(.*)',UnidadHP),#put
+	('/ueliminar/(.*)',UnidadD),#delete
+	('/uagregarasis/(.*)',UnidadAasis),
+	('/uagregarani/(.*)',UnidadAani),
+	('/uasisd/(.*)/(.*)',UnidadAasisD),
+	('/uanid/(.*)/(.*)',UnidadAaniD),
 	('/llamadas',LlamadasH),
-	('/crearl',LlamadasHP),
-	('/modificarl/(.*)',LlamadasHpu),
-	('/eliminarl/(.*)',LlamadasD),
-	('/eventos',EventoH),
-	('/creare',EventoHP),
-	('/modificare/(.*)',EventoHpu),
-	('/eliminare/(.*)',EventoD)
+	('/llamadas/(.*)',LlamadasHT),
+	('/eventos',EventosH),
+	('/ecrear',EventosHPO),
+	('/easistencia',EventosAsis),
+	('/semanas/(.*)',SemanasH),
+	('/semanass/(.*)/(.*)',SemanasHM),
+	('/reporte',ReporteH),
+	('/login',Login),
+	('/logout',Logout),
+	('/new',ControlH),
+	('/new2',ControlH2)
 ], debug=True)

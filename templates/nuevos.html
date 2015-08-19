@@ -17,22 +17,16 @@
       <div> 
         <div data-magellan-expedition="fixed" class="small-4 large-4 medium-4 columns" id="navbar1">
           <dl class="sub-nav">
-            <dd data-magellan-arrival="acerca-de-nosotros"><a href="/grupos">Grupo</a></dd>
-            <dd data-magellan-arrival="menu"><a href="/llamadas">Llamadas</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="/eventos">Eventos</a></dd>
-            <dd data-magellan-arrival="menu"><a href="/animadora">Animadoras</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="/unidad">Unidad</a></dd>
-            <dd data-magellan-arrival="menu"><a href="/curso">Cursos</a></dd>
-            <dd data-magellan-arrival="contactanos"><a href="/asistente">Asistentes</a></dd>
             {% if user == "None" %}
              <dd style="float: right;"><a href="{{greeting}}">sign in</a></dd>
             {% endif %}
-            {% if user != "None" %}
              <dd style="float: right;"><a href="{{logout}}">{{user}}</a></dd>
-            {% endif %}
           </dl>
         </div>
       </div>
+    </div>
+    <div class="row">
+    <h1>Favor de contactar a la persona encargada si desea entrar</h1>  
     </div>
     
      

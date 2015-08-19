@@ -32,8 +32,8 @@
         <h1>Asistentes</h1>
     </div>
     <div class="row">
-      <a href="grado"><button class="button left" id="btnAdd">Agregar Grado</button></a>
-      <a href="prueba"><button class="button right" id="btnAdd">Agregar Asistente</button></a>
+      <a href="/grado"><button class="button left" id="btnAdd">Agregar Grado</button></a>
+      <a href="/asisagregar"><button class="button right" id="btnAdd">Agregar Asistente</button></a>
     </div>
     <div class="row">
       <div class="large-12 medium-12 columns">
@@ -61,8 +61,12 @@
                 <td>{{a.telefono}}</td>
                 <td>{{a.cumple}}</td>
                 <td>{{a.correo}}</td>
-                <td>{{a.grado.nombre}}</td>
-                <td><a href="/modificara/{{a.llave}}">Modificar</a></td>
+                {% for g in grados %}
+                  {% if g.llave == a.grado %}
+                    <td>{{g.nombre}}</td>
+                  {% endif %}
+                {% endfor %}
+                <td><a href="/asismodificar/{{a.llave}}">Modificar</a></td>
               </tr>
             {% endfor %}
           </tbody>

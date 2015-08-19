@@ -28,30 +28,32 @@
       </div>
     </div>
     <div class="row">
-      <h1>Agregar Grado</h1>
-      <form accion="/crearg" method="post">
-          <div class="large-12 medium-12 columns">
-            <div class="large-2 medium-2 columns">
+     <form accion="/grado" method="post">
+      <div class="large-6 medium-6 columns">
+       <h2>Agregar Grado</h2>
+         <div class="large-2 medium-2 columns">
             <label>Nombre</label>
-            </div>
-            <div class="large-2 medium-2 columns">
+         </div>
+         <div class="large-2 medium-2 columns">
               <input name="nombre">
-            </div>
-            <div class="large-2 medium-2 columns">
-              <input type="submit">
-            </div>
-          </div>
-      </form>
-      <div class="large-12 columns">
+         </div>
+         <div class="large-2 medium-2 columns">
+              <input type="submit" value="Crear" name="btn">
+         </div>
+      </div>
+        
+      <div class="large-6 medium-6 columns">
+       <!--<form accion="/grado" method="cambiar">-->
         <h2>Grados ya existentes</h2>
-        <ul>
-          {% for grado in grados%}
+         <ul>
+          {% for g in grado%}
             <div class="large-2 columns">
-             <a href="modificarg/{{grado.nombre}}"><il>{{grado.nombre}}</il></a>
+             <a href="/grado/{{g.nombre}}"><il>{{g.nombre}}</il></a>
             </div>
           {% endfor %}
-        </ul>
+         </ul>
       </div>
+     </form>
     </div>
     <div class="row">
      <a id="btnAddt" class="leftMargin button round" href="asistente">Volver</a>

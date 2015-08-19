@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Eventos</title>
+    <title>Modificar curso</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -29,23 +29,45 @@
       </div>
     </div>
     <div class="row">
-      <h1>Eventos</h1>
-      <a href="/ecrear"><button class="right" id="btnAdd">Agregar Evento</button></a>
-      <a  href="/easistencia"><button style="margin-right:10px;" class="right" id="btnAdd">Formato de asistencia</button></a>
-      <div class="large-12 medium-12 columns">
-        {% for e in eventos %}
-          <div class="large-3 medium-3 columns">
-            <a>{{e.nombre}}</a>
-          </div>
-        {% endfor %}
-      </div>
+        <h1>Cursos</h1>
     </div>
-    
-
+    <div class="row">
+      <div class="large-12 medium-12 columns">
+        <div class="large-2 medium-2 columns">
+          <a id="btnAdd" class="leftMargin button round" href="/curso">Volver</a>
+        </div>
+        <form accion="/cmodificar" method="post">
+            <div class="large-8 medium-8 columns">
+              <div class="large-1 medium-1 columns">
+                  <label id="mart">Tipo</label>
+              </div>
+              <div class="large-4 medium-4 columns">
+                <select  name="tipo">
+                 <option value="H"{%if curso.tipo == 'H'%}selected{%endif%}>Humana</option>
+			     <option value="M"{%if curso.tipo == 'M'%}selected{%endif%}>Moral</option>
+                 <option value="H&M"{%if curso.tipo == 'H&M'%}selected{%endif%}>Humana y Moral</option>
+			    </select>
+              </div>
+              <div class="large-1 medium-1 columns">
+                  <label id="mart">Nivel</label>
+              </div>
+              <div class="large-3 medium-3 columns">
+                <input style="margin-top:10px;" name="nivel" value="{{curso.nivel}}">
+              </div>    
+              <div class="large-1 medium-1 columns">
+                <input style="margin-top:10px;" type="submit" id="btnAdd" value="Cambiar">
+              </div>
+              <div class="large-2 medium-2 columns"></div>
+            </div>
+          </form>
+          <div class="large-2 medium-2 columns">
+                <a  class="button alert round right" href="/celiminar/{{curso.llave}}">Eliminar</a>
+          </div>
+        </div>
+    </div>
     <!-- FOUNDATION -->
     <script>
       $(document).foundation();
-     
     </script>
   </body>
 

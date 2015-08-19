@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Unidad</title>
+    <title>{{u.nombre}}</title>
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
@@ -44,8 +44,24 @@
       <div class="large-4 medium-4 columns">
         <a class="button round right" id="btnAdd" href="/unidad">Volver</a>
       </div>
-       <div class="large-6 medium-6 columns">
-        <form accion="/modificars/{{u.codigo}}" method="post">
+      <div class="large-12 medium-12 columns" id="semanas">
+        <a href="/semanass/{{u.llave}}/0">Enero</a>
+        <a href="/semanass/{{u.llave}}/1">Febrero</a>
+        <a href="/semanass/{{u.llave}}/2">Marzo</a>
+        <a href="/semanass/{{u.llave}}/3">Abril</a>
+        <a href="/semanass/{{u.llave}}/4">Mayo</a>
+        <a href="/semanass/{{u.llave}}/5">Junio</a>
+        <a href="/semanass/{{u.llave}}/6">Septiembre</a>
+        <a href="/semanass/{{u.llave}}/7">Octubre</a>
+        <a href="/semanass/{{u.llave}}/8">Noviembre</a>
+        <a href="/semanass/{{u.llave}}/9">Diciembre</a>
+      </div>
+      <div class="large-6 medium-6 columns">
+           <h2>{{mes}}</h2>
+           <div class="large-12 medium-12 columns">
+               <p>Asistencias totales: {{u.total[xx]}}</p>
+          </div>
+        <form accion="/semanass/{{u.llave}}/{{xx}}" method="post">
          <table id="tablaS">
           <thead>
             <th></th>
@@ -54,248 +70,51 @@
             <th>S2</th>
             <th>S3</th>
             <th>S4</th>
-            <th>S5</th>
+            <th>Ss</th>
           </thead>
           <tbody>
-            {% for a in ani %}
-              {% for s in se %}
-              <tr>
-               {% if s.asistente == u.animadora[0] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.animadora[1] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.animadora[2] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.animadora[3] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.animadora[4] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-             </tr>      
-              {% endfor %}
+            {% for x in u.animadora %}
+              {% for m in meses %}
+                {% for a in ani %}
+                 {% if m.asistente == x and m.asistente == a.llave %}
+                  <tr>
+                      <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
+                      <td><p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
+                      <td>{{m.semanas[xx].s1}}</td>
+                      <td>{{m.semanas[xx].s2}}</td>
+                      <td>{{m.semanas[xx].s3}}</td>
+                      <td>{{m.semanas[xx].s4}}</td>
+                      <td>{{m.semanas[xx].ss}}</td>
+                  </tr>
+                 {% endif %}
+               {% endfor %}   
+             {% endfor %}
             {% endfor %}
             <tr>
-              <td></td>
-              <td><h3>Asistentes</h3></td>
+              <th></th>
+              <th><h3>Asistentes</h3></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
-            {% for a in asis %}
-              {% for s in se %}
-              <tr>
-               {% if s.asistente == u.asistente[0] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[1] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[2] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[3] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[4] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[5] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[6] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[7] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[8] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[9] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[10] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[11] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[12] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[13] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[14] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[15] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[16] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-               {% if s.asistente == u.asistente[17] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[18] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}  
-               {% if s.asistente == u.asistente[19] and s.asistente == a.llave %}
-                <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
-                <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
-                <td>{{s.s1}}</td>
-                <td>{{s.s2}}</td>
-                <td>{{s.s3}}</td>
-                <td>{{s.s4}}</td>
-                <td>{{s.ss}}</td>
-               {% endif %}
-             </tr>      
+            {% for x in u.asistente %}
+             {% for m in meses %}
+              {% for a in asis %}
+                {% if m.asistente == x and m.asistente == a.llave %}
+                 <tr>
+                     <td><input type="checkbox" name="a" value ="{{a.llave}}"></input></td>
+                     <td><p>{{a.nombre}} {{a.app}} {{a.apm}}</p></td>
+                     <td>{{m.semanas[xx].s1}}</td>
+                     <td>{{m.semanas[xx].s2}}</td>
+                     <td>{{m.semanas[xx].s3}}</td>
+                     <td>{{m.semanas[xx].s4}}</td>
+                     <td>{{m.semanas[xx].ss}}</td>
+                 </tr>
+                    {{break}}
+                {% endif %}
+              {% endfor %}
               {% endfor %}
             {% endfor %}
           </tbody>
@@ -346,14 +165,18 @@
             <input value="" name="ss">
            </div>
           </div>
-          <div class="large-3 medium-3 columns"> 
-           <div class="large-1 medium-1 columns">
+          <div class="large-6 medium-6 columns"> 
+           <div class="large-9 medium-9 columns">
+               <p>Asistencias totales</p>
            </div>
            <div class="large-2 medium-2 columns">
-            <input id="btnAdd" value="Actualizar" type="submit">
+            <input name="totales">
            </div>
           </div>
          </div>
+          <div id="mart" class="large-6 medium-6 columns">
+            <input style="text-align:right;"id="btnAdd" value="Actualizar" type="submit">
+          </div>
       </form>
      </div>
     </div>

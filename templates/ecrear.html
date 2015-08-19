@@ -6,6 +6,8 @@
     <link href="/css/foundation.min.css" rel="stylesheet" type="text/css"  media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="screen">
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" media="print">
+    <link href="/css/mediaprint.css" rel="stylesheet" type="text/css" media="print">
+    <link href="/css/mediaprint.css" rel="stylesheet" type="text/css" media="screen">
     <script src="/js/javascript.js"></script>
     <script src="/js/vendor/jquery.js" ></script>
     <script src="/js/foundation.min.js" ></script>
@@ -36,74 +38,42 @@
          <a class="noPrint" href="/unidad/{{t.tipo}}">{{t.tipo}}</a>
       {% endfor %}
       <input TYPE="button" onClick="window.print()" value="Imprimir" />
-      <a href="/uagregar"><button class="right" id="btnAdd">Agregar Unidad</button></a>
-      <a href="/unidaddirectorio"><button style="margin-right:10px;"class="right" id="btnAdd">Directorio</button></a>
+      <a href="/eventos"><button class="right" id="btnAdd">Eventos</button></a>
     </div>
       <!--<div class="large-12 medium-12 columns">-->
-        <table   class="centered yesPrint" id="mostrarAn">
+        <table border=1 frame=void rules=rows class="centered yesPrint" id="mostrarAn">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Codigo</th>
-              <th>Direccion</th>
-              <th>Animadoras</th>
-              <th>Telefono</th>
-              <th>Dia</th>
-              <th>Hora</th>
-              <th>Tipo</th>
-              <th>Parroco</th>    
-              <th>Virgen</th>
-              <th>Formacion</th>
-              <th>Nivel</th>
-              <th>Ciudad</th>
-              <th></th>
+              <th colspan="2"><p class="noPrint">Evento</p></th>
+              <th><p align="left">Fecha:</p></th>
             </tr>
           </thead>
           <tbody>
+            <tr></tr>
+            <tr>
+            <th>Unidad</th>
+            <th width="45%">Animadora</th>
+            <th width="40%">Observaciones</th>    
+            </tr>
             {% for u in unidad %}
             <tr>
-              <td><a href="/semanas/{{u.llave}}">{{u.nombre}}</a></td>
-              <td>{{u.codigo}}</td>
-              <td>{{u.direccion}}</td>
-              <td>
+              <td>{{u.nombre}}</td>
+              <td colspan="2">
                  {% for a in ani %}
                   {% for x in u.animadora %}
                     {% if a.llave == x %}
-                      <p class="{{a.coordinadora}}">{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                      <p><input type="checkbox" name="a" value ="{{a.llave}}"></input>{{a.nombre}} {{a.app}} {{a.apm}}</p>
+                      {%if a.coordinadora == "no"%}<hr>{%endif%}
                     {% endif %}
                   {% endfor %}
                  {% endfor %}
-                  <a href="/uagregarani/{{u.llave}}" class="noPrint">Agregar Animadora</a>
-              </td>
-              <td>{{u.telefono}}</td>
-              <td>{{u.dia}}</td>
-              <td>{{u.hora}}</td>
-              <td>{{u.tipo}}</td>
-              <td>{{u.parroco}}</td>
-              <td style="text-align:center">{{u.virgen}}</td>
-              {% for c in curso %}
-                {% if c.llave == u.cursos %}
-                 <td style="text-align:center">{{c.tipo}}</td>
-                 <td>{{c.nivel}}</td>
-                {% endif %}
-              {% endfor %}
-              <td>{{u.ciudad}}</td>   
-              <td class="noPrint"><p><a href="/umodificar/{{u.llave}}">Modificar</a></p>
-                  <p><a href="/uagregarasis/{{u.llave}}">Agregar Asistentes</a></p>
-                  <p><a href="/uagregare/{{u.llave}}">Agregar Evento</a></p></td>
+                </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
    <!--   </div>
     </div>-->
-    
-      <script type="text/javascript">
-    //Simple wrapper to pass a jQuery object to your new window
-    function PrintElement(elem){
-        
-    }
-</script>
       
     <!-- FOUNDATION -->
     <script>

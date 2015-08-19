@@ -47,7 +47,7 @@
               <tr>
                 <td>{{c.tipo}}</td>
                 <td>{{c.nivel}}</td>
-                <td><a href="/modificarc/{{c.llave}}">Modificar</a></td>
+                <td><a href="/cmodificar/{{c.llave}}">Modificar</a></td>
               </tr>
             {% endfor %}
           </tbody>
@@ -55,17 +55,21 @@
       </div>
      <div class="large-5 medium-5 columns">
       <h4>Agregar Curso</h4>
-        <form accion="/crearc" method="post">
-          <div class="large-2 medium-2 columns">
+        <form accion="/cagregar" method="post">
+          <div class="large-6 medium-6 columns">
             <p>Tipo
-            <input name="tipo">
+            <select name="tipo">
+                <option value="H">Humana</option>
+				<option value="M">Moral</option>
+                <option value="H&M">Humana y Moral</option>
+			</select>
             </p>
             <br>
             <p>Nivel
             <input name="nivel">
             </p>
           </div>
-          <div class="large-3 medium-3 columns">
+          <div class="large-6 medium-6 columns">
             <input id="inputCc" type="submit" value="Crear">
           </div>
         </form>

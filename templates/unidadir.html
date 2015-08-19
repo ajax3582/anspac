@@ -32,12 +32,8 @@
     </div>
     <div class="row noPrint">
       <h1>{{x}}</h1>
-      {% for t in tipos %}
-         <a class="noPrint" href="/unidad/{{t.tipo}}">{{t.tipo}}</a>
-      {% endfor %}
       <input TYPE="button" onClick="window.print()" value="Imprimir" />
       <a href="/uagregar"><button class="right" id="btnAdd">Agregar Unidad</button></a>
-      <a href="/unidaddirectorio"><button style="margin-right:10px;"class="right" id="btnAdd">Directorio</button></a>
     </div>
       <!--<div class="large-12 medium-12 columns">-->
         <table   class="centered yesPrint" id="mostrarAn">
@@ -62,7 +58,7 @@
           <tbody>
             {% for u in unidad %}
             <tr>
-              <td><a href="/semanas/{{u.llave}}">{{u.nombre}}</a></td>
+              <td><a href="/semanas/{{u.codigo}}">{{u.nombre}}</a></td>
               <td>{{u.codigo}}</td>
               <td>{{u.direccion}}</td>
               <td>

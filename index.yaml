@@ -10,12 +10,18 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: Cursos
+- kind: Animadora
   properties:
-  - name: nivel
-  - name: tipo
+  - name: coordinadora
+  - name: app
 
-- kind: Cursos
+- kind: Animadora
+  properties:
+  - name: coordinadora
+    direction: desc
+  - name: app
+
+- kind: Unidad
   properties:
   - name: tipo
-  - name: nivel
+  - name: nombre
